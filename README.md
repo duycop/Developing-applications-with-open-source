@@ -147,7 +147,7 @@ D --> E
 3. Nếu thay đổi file index.html ở máy Ubuntu, nội dung trên web có thay đổi ngay không? Tại sao?
 4. docker-compose.yml khai báo các services có phần **restart: always** hoặc **restart: unless-stopped** : chúng để làm gì?
 5. Cách khai báo để tất cả các services đều dùng chung 1 network? lợi ích của việc khai báo này là gì?
-6. Tìm cách đưa Cloudflare **Token** vào trong file .env. Tại sao nói đây là điều quan trọng về bảo mật mã nguồn?
+6. Tìm cách đưa Cloudflare **Token** vào trong file .env rồi sau đó thêm .env vào file .gitignore trước khi push code lên github. Tại sao nói đây là điều quan trọng về bảo mật mã nguồn?
 7. Tại sao chúng ta nên thêm hậu tố :ro khi mount file cấu hình Nginx?
 
 ### Hướng dẫn làm bài:
