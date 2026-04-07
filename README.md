@@ -82,7 +82,7 @@ Lớp: 58KTPM
 
 	# Lệnh khởi chạy ứng dụng
 	CMD ["python", "app.py"]
-5. biên dịch thử: docker build . myapp:latest
+5. biên dịch thử: **docker build -t myapp:latest .**
 6. Sửa đổi docker-compose để sử dụng myapp
 7. Sửa đổi nginx/nginx.conf để /api trỏ tới service myapp cổng 9630
 
@@ -112,6 +112,8 @@ myapp/
 ├── myweb/
 │   └── index.html
 └── nodered/ (sẽ tự sinh dữ liệu)
+│   └── (có nhiều file tự sinh)
+│   └── settings.js (file này cần edit để bắt nodered login)
 ```
 
 #### Sơ đồ mô tả:
@@ -140,7 +142,7 @@ H -- proxy --> G
 4. làm xong tất cả: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
 
 ### Tham khảo file trên lớp
-./docker-compose.yml
+./docker-compose.yml : 
 ```
 	 services:
 	  myapi:
@@ -174,21 +176,26 @@ H -- proxy --> G
 	    restart: always
 	    volumes:
 	      # Ánh xạ thư mục chứa file bài thơ
-	      - ./myweb:/usr/share/nginx/html:ro
-	      - ./tho2:/tho2:ro
+	      - ./myweb:/myweb:ro
 	      # Ánh xạ file cấu hình nginx
-	      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+	      - ./nginx/nginx.conf:ro
 ```
-./nginx/conf.d/default.conf:
+./nginx/nginx.conf :
 ```
 	server {
 	    listen 80;
 	    server_name thotinh.tdh.io.vn;
 
 	    location / {
-	        root /usr/share/nginx/html;
+	        root /myweb;
 	        index index.html index.htm;
 	        try_files $uri $uri/ =404;
+	    }
+
+	    # Cấu hình tối ưu thêm (tùy chọn)
+	    error_page 500 502 503 504 /50x.html;
+	    location = /50x.html {
+	        root /myweb;
 	    }
 
 	    location /api {
@@ -199,33 +206,9 @@ H -- proxy --> G
 	        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 	        proxy_set_header X-Forwarded-Proto $scheme;
 	    }
-
-
-	    # Cấu hình tối ưu thêm (tùy chọn)
-	    error_page 500 502 503 504 /50x.html;
-	    location = /50x.html {
-	        root /usr/share/nginx/html;
-	    }
-	}
-
-	server {
-	    listen 80;
-	    server_name thophap.tdh.io.vn;
-
-	    location / {
-	        root /tho2;
-	        index index.html index.htm;
-	        try_files $uri $uri/ =404;
-	    }
-
-	    # Cấu hình tối ưu thêm (tùy chọn)
-	    error_page 500 502 503 504 /50x.html;
-	    location = /50x.html {
-	        root /tho2;
-	    }
 	}
 ```
-myapp/app.py
+./myapp/app.py :
 ```
 	from flask import Flask, request, jsonify
 
