@@ -126,10 +126,16 @@ H -- proxy --> G
 
 ```
 
+### G. Câu hỏi về bài làm?
+1. Tại sao phải dùng Nginx làm Reverse Proxy mà không trỏ thẳng Tunnel vào Node-RED?
+2. Sự khác biệt giữa việc Mount file và Mount thư mục trong Docker là gì?
+3. Nếu thay đổi file index.html ở máy Ubuntu, nội dung trên web có thay đổi ngay không? Tại sao?
+
 ### Hướng dẫn làm bài:
 1. sv tự làm trên laptop cá nhân, tự nâng cấp các phần mềm hoặc OS lên phiên bản phù hợp, trang bị cấu hình đủ tải (RAM từ 8GB, ổ cứng SSD or NVME)
 2. quá trình làm: chụp màn hình, paste hình ảnh + gõ text chú thích cho hình ảnh vào readme.md của 1 repo trên github cá nhân, để truy cập public
-3. làm xong các phần ABCDE: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
+3. Mỗi phần ABCDEFG tạo 1 file tương ứng là A.md , B.md .... chứa nội dung đã làm: hình ảnh + text thuyết minh (lặp nhiều lần) cho phần đó.
+4. làm xong tất cả: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
 
 ### Tham khảo file trên lớp
 ./docker-compose.yml
