@@ -50,6 +50,7 @@ Lớp: 58KTPM
    > - Khai báo sử dụng nodered/node-red, cổng 1880, dữ liệu nằm tại thư mục ./nodered
    > - Khai báo sử dụng nginx, cổng 80, cấu hình trong file ./nginx/nginx.conf
    > - Mount thư mục ./myweb thành thư mục /myweb trong nginx
+   > - **Lưu ý** tất cả các dịch vụ (Nginx, Node-RED, Cloudflare Tunnel) phải nằm chung một network trong Docker Compose để có thể gọi nhau bằng tên service.
 6. Edit file **./nginx/nginx.conf** để: 
    > - Cấu hình web server cổng 80
    > - server_name là sub-domain (sub-domain tuỳ ý của em)
@@ -88,6 +89,7 @@ Lớp: 58KTPM
 ### E. Triển khai (level test) ứng dụng
 1. Chuyển vào trong thư mục ~/myapp
 2. Gõ lệnh để docker compose chạy: sẽ run tất cả các service khai báo trong file docker-compose.yml
+  > Lợi ích: Chỉ cần docker-compose up -d là toàn bộ hệ thống (Web + Node-RED + Tunnel) tự chạy,
 3. Kiểm tra các container đang chạy trong docker, nếu có cái nào bị restart cần tìm lỗi rồi edit lại docker-compose.yml
 4. Kiểm tra kiểm thử các service đang chạy độc lập thông qua ip và port của nó: ví dụ mở trình duyệt ip_ubuntu:1880 để check nodered đã chạy chưa
 5. Sử dụng nodered: kéo nodered http_in , http_response, function : để tạo api get đơn giản (dùng cho /api proxy_pass của nginx)
