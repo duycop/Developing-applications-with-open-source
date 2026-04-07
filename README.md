@@ -50,7 +50,7 @@ Lớp: 58KTPM
    > - Khai báo sử dụng nodered/node-red, cổng 1880, dữ liệu nằm tại thư mục ./nodered
    > - Khai báo sử dụng nginx, cổng 80, cấu hình trong file ./nginx/nginx.conf
    > - Mount thư mục ./myweb thành thư mục /myweb trong nginx
-   > - **Lưu ý** tất cả các dịch vụ (Nginx, Node-RED, Cloudflare Tunnel) phải nằm chung một network trong Docker Compose để có thể gọi nhau bằng tên service.
+   > - Mount file **./nginx/nginx.conf** vào file **/etc/nginx/nginx.conf** trong nginx
 6. Edit file **./nginx/nginx.conf** để: 
    > - Cấu hình web server cổng 80
    > - server_name là sub-domain (sub-domain tuỳ ý của em)
@@ -93,6 +93,7 @@ Lớp: 58KTPM
 3. Kiểm tra các container đang chạy trong docker, nếu có cái nào bị restart cần tìm lỗi rồi edit lại docker-compose.yml
 4. Kiểm tra kiểm thử các service đang chạy độc lập thông qua ip và port của nó: ví dụ mở trình duyệt ip_ubuntu:1880 để check nodered đã chạy chưa
 5. Sử dụng nodered: kéo nodered http_in , http_response, function : để tạo api get đơn giản (dùng cho /api proxy_pass của nginx)
+6. Sửa file ./myweb/index.html : thêm code html+js để sử dụng được api đã khai báo proxy_pass (thực ra là sử dụng nodered http_in hoặc sử dụng service myapi)
 
 ### F. Triển khai ứng dụng đến End-user
 1. Trong Cloudflare: Tạo tunnel (đường hầm), chọn loại triển khai cho docker
@@ -101,7 +102,6 @@ Lớp: 58KTPM
 4. Chạy lại docker compose
 5. Public ứng dụng bằng cách thêm 1 router trỏ tới container đang chạy trong docker, dữ liệu sẽ đi qua tunnel, url dạng sub-domain
 6. Kiểm tra url sub-domain đã hoạt động public cho mọi end-user
-
 
 #### Cấu trúc thư mục:
 ```
@@ -134,6 +134,10 @@ H -- proxy --> G
 1. Tại sao phải dùng Nginx làm Reverse Proxy mà không trỏ thẳng Tunnel vào Node-RED?
 2. Sự khác biệt giữa việc Mount file và Mount thư mục trong Docker là gì?
 3. Nếu thay đổi file index.html ở máy Ubuntu, nội dung trên web có thay đổi ngay không? Tại sao?
+4. docker-compose.yml khai báo các services có phần **restart: always** hoặc **restart: unless-stopped** : chúng để làm gì?
+5. Cách khai báo để tất cả các services đều dùng chung 1 network? lợi ích của việc khai báo này là gì?
+6. Tìm cách đưa Cloudflare **Token** vào trong file .env. Tại sao nói đây là điều quan trọng về bảo mật mã nguồn?
+7. Tại sao chúng ta nên thêm hậu tố :ro khi mount file cấu hình Nginx?
 
 ### Hướng dẫn làm bài:
 1. sv tự làm trên laptop cá nhân, tự nâng cấp các phần mềm hoặc OS lên phiên bản phù hợp, trang bị cấu hình đủ tải (RAM từ 8GB, ổ cứng SSD or NVME)
@@ -159,7 +163,7 @@ H -- proxy --> G
 	    container_name: mynodered
 	    restart: unless-stopped
 	    ports:
-	      - "1888:1880"
+	      - "1880:1880"
 	    volumes:
 	      # đường dẫn thư mục trên máy của bạn
 	      - ./nodered-data:/data
@@ -174,11 +178,14 @@ H -- proxy --> G
 	    image: nginx
 	    container_name: mynginx
 	    restart: always
+	    ports:
+	      - "80:80"
+	      - "443:443"
 	    volumes:
 	      # Ánh xạ thư mục chứa file bài thơ
 	      - ./myweb:/myweb:ro
 	      # Ánh xạ file cấu hình nginx
-	      - ./nginx/nginx.conf:ro
+	      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 ```
 ./nginx/nginx.conf :
 ```
@@ -190,12 +197,6 @@ H -- proxy --> G
 	        root /myweb;
 	        index index.html index.htm;
 	        try_files $uri $uri/ =404;
-	    }
-
-	    # Cấu hình tối ưu thêm (tùy chọn)
-	    error_page 500 502 503 504 /50x.html;
-	    location = /50x.html {
-	        root /myweb;
 	    }
 
 	    location /api {
