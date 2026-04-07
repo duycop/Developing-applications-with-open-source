@@ -40,6 +40,7 @@ Lớp: 58KTPM
 4. Kiểm tra phiên bản docker vừa cài đặt, kiểm tra phiên bản của docker compose
 5. Cấu hình để docker chạy mà không cần tiền tố sudo
 6. Tìm hiểu tập lệnh của docker và docker compose
+7. Đảm bảo tường lửa trên Ubuntu đã cho phép các cổng 80, 1880, 9630 (Lệnh: sudo ufw allow ...)
 
 ### C. Cấu hình docker compose:
 1. Tạo thư mục: ~/myapp
@@ -57,11 +58,12 @@ Lớp: 58KTPM
    > - location / trỏ tới root là thư mục /myweb
    > - location /api dùng proxy_pass trỏ tới 1 (hoặc nhiều) node http_in của nodered
 7. Edit file **./nodered/settings.js** để nodered bắt buộc đăng nhập
-
+   > Chạy docker-compose lần đầu để Node-RED tự sinh file cấu hình trong thư mục ./nodered, sau đó mới tiến hành sửa settings.js và restart lại container
+   
 ### D. (Bonus - không bắt buộc)
 1. tạo thư mục ./myapi
 2. tạo file ./myapi/app.py sử dụng Python + Flask để làm gì đó funny
-3. tạo file ./myapi/requirements.txt chứa các thư viện mà app.py sử dụng (ví dụ: flask)
+3. tạo file ./myapi/requirements.txt chứa các thư viện mà app.py sử dụng (theo như app.py ví dụ thì requirements.txt chỉ cần có nội dung: **flask**)
 4. tạo file ./myapi/Dockerfile để khai báo sử dụng Python 3.9 slim
    ```
 	# Sử dụng phiên bản Python nhẹ (alpine) để giảm dung lượng image
@@ -82,9 +84,8 @@ Lớp: 58KTPM
 
 	# Lệnh khởi chạy ứng dụng
 	CMD ["python", "app.py"]
-5. biên dịch thử: **docker build -t myapp:latest .**
-6. Sửa đổi docker-compose để sử dụng myapp
-7. Sửa đổi nginx/nginx.conf để /api trỏ tới service myapp cổng 9630
+5. Sửa đổi docker-compose để sử dụng myapp (xem phần tham khảo ở dưới)
+6. Sửa đổi nginx/nginx.conf để /api trỏ tới service myapp cổng 9630
 
 ### E. Triển khai (level test) ứng dụng
 1. Chuyển vào trong thư mục ~/myapp
@@ -116,7 +117,7 @@ myapp/
 │   └── settings.js (file này cần edit để bắt nodered login)
 ```
 
-#### Sơ đồ mô tả:
+#### Sơ đồ theo góc nhìn của dev:
 ```mermaid
 graph LR
 A(Ubuntu) -- Command basic --> B((Docker compose))
@@ -128,6 +129,16 @@ B -- Khai báo --> G(myapi)
 D -- Cấu hình --> H((API)) --> F
 H -- proxy --> G
 
+```
+
+#### Sơ đồ theo góc nhìn ngược lại:
+```mermaid
+graph LR
+A[End-user] --> B((Cloudflare Tunnel)) --> C((Nginx))
+C -- Cấu hình --> D(Nodered login)
+C -- Cấu hình --> E((web+domain))
+C -- Cấu hình --> G(myapi as api) --> E
+D --> E
 ```
 
 ### G. Câu hỏi về bài làm?
@@ -142,8 +153,9 @@ H -- proxy --> G
 ### Hướng dẫn làm bài:
 1. sv tự làm trên laptop cá nhân, tự nâng cấp các phần mềm hoặc OS lên phiên bản phù hợp, trang bị cấu hình đủ tải (RAM từ 8GB, ổ cứng SSD or NVME)
 2. quá trình làm: chụp màn hình, paste hình ảnh + gõ text chú thích cho hình ảnh vào readme.md của 1 repo trên github cá nhân, để truy cập public
-3. Mỗi phần ABCDEFG tạo 1 file tương ứng là A.md , B.md .... chứa nội dung đã làm: hình ảnh + text thuyết minh (lặp nhiều lần) cho phần đó.
-4. làm xong tất cả: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
+3. Mỗi phần ABCDEFG tạo 1 file tương ứng là A.md , B.md .... file README.md chứa link tới các file A.md, B.md, ... để dễ quản lý
+4. Mỗi file cho mỗi phần chứa nội dung đã làm: hình ảnh + text thuyết minh (lặp nhiều lần) cho phần đó.
+5. làm xong tất cả: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
 
 ### Tham khảo file trên lớp
 ./docker-compose.yml : 
@@ -166,7 +178,7 @@ H -- proxy --> G
 	      - "1880:1880"
 	    volumes:
 	      # đường dẫn thư mục trên máy của bạn
-	      - ./nodered-data:/data
+	      - ./nodered:/data
 
 	  mycloudflared:
 	    image: cloudflare/cloudflared:latest
@@ -200,7 +212,7 @@ H -- proxy --> G
 	    }
 
 	    location /api {
-	        # 'vat-service' là tên container trong docker-compose
+	        # 'myapi' là tên container trong docker-compose
 	        proxy_pass http://myapi:9630/tinh-vat;
 	        proxy_set_header Host $host;
 	        proxy_set_header X-Real-IP $remote_addr;
