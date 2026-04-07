@@ -95,8 +95,24 @@ Lớp: 58KTPM
 4. Kiểm tra kiểm thử các service đang chạy độc lập thông qua ip và port của nó: ví dụ mở trình duyệt ip_ubuntu:1880 để check nodered đã chạy chưa
 5. Sử dụng nodered: kéo nodered http_in , http_response, function : để tạo api get đơn giản (dùng cho /api proxy_pass của nginx)
 6. Sửa file ./myweb/index.html : thêm code html+js để sử dụng được api đã khai báo proxy_pass (thực ra là sử dụng nodered http_in hoặc sử dụng service myapi)
+> 
+### F. Gỡ lỗi:
+1. nếu có lỗi xẩy ra trong quá trình triển khai docker compose up -d
+   > Kiểm tra nhanh: **docker compose ps** giúp biết container nào đang chạy
+   > xem log, ví dụ:
+   >  docker logs mynginx
+   >  docker logs myapi
+2. Thêm healthcheck cho myapi trong file docker-compose.yml
+   >     healthcheck:
+   >       test: ["CMD", "curl", "-f", "http://localhost:9630"]
+3. giới hạn resource cho một service: (tránh việc 1 service chiếm quá nhiều ram)
+   >     deploy:
+   >       resources:
+   >         limits:
+   >           memory: 512M
+   sử dụng lệnh: **docker compose stats** để quan sát lượng ram sử dụng bởi mỗi service
 
-### F. Triển khai ứng dụng đến End-user
+### G. Triển khai ứng dụng đến End-user
 1. Trong Cloudflare: Tạo tunnel (đường hầm), chọn loại triển khai cho docker
 2. Convert lệnh docker run ... sang dạng docker compose
 3. Khai báo kết quả convert vào trong file docker-compose.yml
@@ -146,9 +162,10 @@ D --> E
 2. Sự khác biệt giữa việc Mount file và Mount thư mục trong Docker là gì?
 3. Nếu thay đổi file index.html ở máy Ubuntu, nội dung trên web có thay đổi ngay không? Tại sao?
 4. docker-compose.yml khai báo các services có phần **restart: always** hoặc **restart: unless-stopped** : chúng để làm gì?
-5. Cách khai báo để tất cả các services đều dùng chung 1 network? lợi ích của việc khai báo này là gì?
+5. Cách khai báo để tất cả các services đều dùng chung 1 network? lợi ích của việc khai báo này là gì? Sửa đổi file docker-compose để tất cả các service đều dùng chung 1 network.
 6. Tìm cách đưa Cloudflare **Token** vào trong file .env rồi sau đó thêm .env vào file .gitignore trước khi push code lên github. Tại sao nói đây là điều quan trọng về bảo mật mã nguồn?
 7. Tại sao chúng ta nên thêm hậu tố :ro khi mount file cấu hình Nginx?
+8. Khi dùng Cloudflare Tunnel: có cần thiết phải mở cổng cho các service nữa không?
 
 ### Hướng dẫn làm bài:
 1. sv tự làm trên laptop cá nhân, tự nâng cấp các phần mềm hoặc OS lên phiên bản phù hợp, trang bị cấu hình đủ tải (RAM từ 8GB, ổ cứng SSD or NVME)
@@ -201,6 +218,8 @@ D --> E
 ```
 ./nginx/nginx.conf :
 ```
+events {}
+http {
 	server {
 	    listen 80;
 	    server_name thotinh.tdh.io.vn;
@@ -220,6 +239,7 @@ D --> E
 	        proxy_set_header X-Forwarded-Proto $scheme;
 	    }
 	}
+}
 ```
 ./myapp/app.py :
 ```
