@@ -173,6 +173,7 @@ D --> E
 3. Mỗi phần ABCDEFG tạo 1 file tương ứng là A.md , B.md .... file README.md chứa link tới các file A.md, B.md, ... để dễ quản lý
 4. Mỗi file cho mỗi phần chứa nội dung đã làm: hình ảnh + text thuyết minh (lặp nhiều lần) cho phần đó.
 5. làm xong tất cả: paste link của repo vào file tổng hợp excel online (làm sau cũng được, vì github ko fake date được)
+   > link gửi bài: https://docs.google.com/spreadsheets/d/1zftQMj748nRpS-_br4_jdHZocNVvo848zqxCGcTy4uU/edit?gid=0#gid=0
 
 ### Tham khảo file trên lớp
 ./docker-compose.yml : 
