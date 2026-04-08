@@ -5,6 +5,7 @@ Lớp: 58KTPM
 **Bài tập 01:** 
 
 ## deadline : 23h59 ngày 13 tháng 4 năm 2026.
+## Link gửi bài: [Tại đây](https://docs.google.com/spreadsheets/d/1zftQMj748nRpS-_br4_jdHZocNVvo848zqxCGcTy4uU/edit?gid=0#gid=0)
 
 ### A. Đăng ký tên miền xịn cho cá nhân:
 1. Đăng ký domain xịn (có thể dùng của [mắt bão](https://www.matbao.net/ten-mien/dang-ky-ten-mien.html), tên miền *.id.vn đang miễn phí cho mọi công dân việt nam <= 23 tuổi, *.io.vn : giá 30k vnđ/năm)
