@@ -3,7 +3,7 @@
 Lớp: 58KTPM
 
 **Bài tập 02:** 
-
+# SỬ DỤNG DJANGO ĐỂ TẠO WEB QUẢN LÝ TIỆM CẦM ĐỒ
 ## deadline : 23h59 ngày 09 tháng 5 năm 2026.
 ## Link gửi bài: [Tại đây](https://docs.google.com/spreadsheets/d/1zftQMj748nRpS-_br4_jdHZocNVvo848zqxCGcTy4uU)
 
