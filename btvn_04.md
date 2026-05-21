@@ -17,7 +17,7 @@ Lớp: 58KTPM
 - Cloudflared: sử dụng **image: cloudflare/cloudflared:latest** , full command và token lấy từ dashboard của cloudflare, dùng AI chuyển sang dạng docker compose
 - N8n : sử dụng **image: n8nio/n8n:latest**, nhớ truyền biến môi trường WEBHOOK_URL theo sub-domain đã add router cho cloudflared tunnel (ví dụ: WEBHOOK_URL=https://k58-n8n.tdh.io.vn/ )
 
-2. Yêu cầu: sau khi có 3 service này trong file docker-compose.yml :
+2. Yêu cầu: sau khi có 5 service này trong file docker-compose.yml :
 - pull các images về và chạy chúng (up -d)
 - Kiểm tra các service đã running ok (ko bị restart liên tục)
 - Cấu hình cloudflare tunnel add router để public wordpress lên sub-domain1 (dùng để truy cập wordpress)
