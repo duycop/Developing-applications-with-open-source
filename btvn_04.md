@@ -39,10 +39,11 @@ Lớp: 58KTPM
     + Lấy API KEY tại trang: https://aistudio.google.com  => https://aistudio.google.com/api-keys
     + cần tạo project mới, sẽ lấy được API KEY
     + Nhập API Key lên giao diện n8n
-    + kéo thả **nội dung đã chát** với bot của telegram (phía bên trái) vào **nội dung phần PROMPT** kết quả được {{ $json.message.text }}, cần gõ thêm vào sau {{ $json.message.text }} để promt dài hơn : vd ({{ $json.message.text }}. Hãy sinh ra định dạng html để tôi đăng vào wp, ...)
+    + kéo thả **nội dung đã chát** với bot của telegram (phía bên trái) vào **nội dung phần PROMPT** kết quả được {{ $json.message.text }}, cần gõ thêm vào sau {{ $json.message.text }} để promt dài hơn : vd ({{ $json.message.text }}. Kết quả sinh ra ở định dạng HTML+CSS để tôi dùng HTML+CSS này tạo bài viết cho wordpress.)
     + Turn on Output Content as JSON : để kết quả trả về dạng json
     + Có thể thử nghiệm các thành phần khác trong Options (add Options: System message, ...) => đưa ra cái nào đáng dùng?
   + Add (nối tiếp vào sau node Message a model) node: Code in JavaScript
+    + Code js ở dạng này, có thể phải thay đổi tuỳ theo json AI trả về.
 ```
 // 1. lấy dữ liệu gốc
 const rawText = $input.first().json.content.parts[0].text;
