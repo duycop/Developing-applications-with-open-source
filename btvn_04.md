@@ -52,8 +52,8 @@ const cleanData = JSON.parse(rawText);
 
 // 3. Trả về kết quả định dạng lại gọn gàng cho n8n sử dụng
 return {
-  title: cleanData[0].title,
-  content: cleanData[0].content
+  title: cleanData.post_title,
+  content: cleanData.post_content
 };
 ```
 
